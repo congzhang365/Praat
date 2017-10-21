@@ -482,12 +482,7 @@ else method = 3
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
 				View & Edit
-				
-				editor TextGrid 'object_name$'
-				Align interval
-				pause Aligned.
-				endeditor
-				
+				pause edit?
 				select TextGrid 'object_name$'
 				Save as text file... 'input_directory$''object_name$'.TextGrid
 			else
