@@ -23,7 +23,7 @@
 
 form F0 point tier:
 	comment Your working directory:
-	sentence Directory C:\Users\rolin\OneDrive\Oxford Research\Thesis related\data\2017\ci\ciall\
+	sentence Directory C:\Users\
 	comment Only analyse the files containing...
 	sentence Word SJ101
 	comment What sound file type would you like to analyse?
@@ -34,7 +34,7 @@ form F0 point tier:
 	integer newtier 6
 	comment ______________________________________________________________________________________________________________
 	comment Save selected objects...
-	sentence Save_to C:\Users\rolin\OneDrive\Oxford Research\Thesis related\data\2017\ci\ciall\point tier\
+	sentence Save_to C:\Users\
 
 endform
 
