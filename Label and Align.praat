@@ -10,7 +10,7 @@
 
 form Files
 	comment Input folder
-	text input_directory C:\Users\
+	text input_directory C:\Users\rolin\Desktop\trial\222\
 	
 	comment Choose method:
 	optionmenu method: 1
@@ -26,7 +26,7 @@ form Files
 	comment If same, the text is:
 	text word
 	comment if transcription, transcription file [with directory]:
-	text transdir C:\Users\234.txt
+	text transdir C:\Users\rolin\Desktop\trial\222\234.txt
 	comment all tier names
 	sentence intervaltiers text tone
 	sentence pointtiers
@@ -63,7 +63,7 @@ if method = 1
 		
 		Create Strings as file list... list 'input_directory$'*.wav
 		number_files = Get number of strings
-		#pause Edit string list?
+		pause Edit string list?
 		
 		for i from 1 to number_files
 			select Strings transcription
@@ -72,130 +72,210 @@ if method = 1
 			select Strings list
 			current_file$ = Get string... i
 			Read from file... 'input_directory$''current_file$'
-			object$ = selected$ ("Sound")
+			object_name$ = selected$ ("Sound")
+			txtgrd$ = input_directory$ + object_name$ +".TextGrid"
+			if fileReadable(txtgrd$)
+				Read from file... 'txtgrd$'
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+				
+				beginPause: "New textgrid" 
+				comment: "Do you want to create new textgrid?"
+				newnewnew = endPause: "1. Yes", "2. No", 2
+				if newnewnew = 2
+					select TextGrid 'object_name$'
+					Save as text file... 'input_directory$''object_name$'.TextGrid
+				else newnewnew = 1
+				select Sound 'object_name$'
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
 			
-			#create a textgrid
-			#to create more tiers:"Mary John bell", "bell"
-			To TextGrid: "'intervaltiers$'","'pointtiers$'"
-			select TextGrid 'object$'
-			plus Sound 'object$'
-			View & Edit
+				pause continue?
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				#pause
+				#Save as text file... 'input_directory$''object_name$'.TextGrid
+				
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				#View & Edit
+				editor TextGrid 'object_name$'
+				Align interval
+				pause Aligned.
+				endeditor
+				select TextGrid 'object_name$'
 			
-			pause continue?
-			select TextGrid 'object$'
-			
-			#write the string in the chosen tier and interval.
-			Set interval text: transtier, transinterval, "'string$'"
-			#pause
-			#Save as text file... 'input_directory$''object$'.TextGrid
-			
-			select TextGrid 'object$'
-			plus Sound 'object$'
-			#View & Edit
-			editor TextGrid 'object$'
-			Align interval
-			pause Aligned.
-			endeditor
-			
-			#The following section is to get the necessary text for different tiers and intervals
-			#!!!!!It needs to change every time the task changes
-			
-			#change "Tier1" to your own tier name
-			#string3$ = extractWord$("'object$'", "Tier1")
-			#string4$ = left$("'string3$'",4)
-			#type$ = right$ ("'object$'", 1)
-			#pause Anything else to change?
-			
-			select TextGrid 'object$'
-			#Duplicate tier: 1, 2, "tone"
-			#Set interval text: 2, 2, "'string4$' - 'type$'"
-			#Duplicate tier: 3, 4, "identity"
-			#Set interval text: 4, 1, ""
-			#Set interval text: 4, 2, "syl1"
-			#Set interval text: 4, 3, "syl2"
-			#Set interval text: 4, 4, ""
-			#pause Save?
-			
-			Save as text file... 'input_directory$''object$'.TextGrid
-			appendInfoLine: "The word is 'string$' for 'object$'."
-			
-		endfor
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+				endif
+			else
+				select Sound 'object_name$'
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+			select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				#pause
+				#Save as text file... 'input_directory$''object_name$'.TextGrid
+				
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				editor TextGrid 'object_name$'
+				Align interval
+				pause Aligned.
+				endeditor
+		
+				select TextGrid 'object_name$'
+
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+			endif
+		endfor	
 	
+				
+	appendInfoLine: "The word is 'string$' for 'object_name$'."
+			
+			
 	# when you do not have a transcription file:
 	else trans = 2
 		Create Strings as file list... list 'input_directory$'*.wav
 		number_files = Get number of strings
-		#pause Edit string list?
+		pause Edit string list?
 		
 		for i from 1 to number_files
 			select Strings list
 			current_file$ = Get string... i
 			Read from file... 'input_directory$''current_file$'
-			object$ = selected$ ("Sound")
+			object_name$ = selected$ ("Sound")
+			txtgrd$ = input_directory$ + object_name$ +".TextGrid"
 			
-			#create a textgrid
-			#to create more tiers:"Mary John bell", "bell"
-			To TextGrid: "'intervaltiers$'","'pointtiers$'"
-			select TextGrid 'object$'
-			plus Sound 'object$'
-			View & Edit
-			
-			
-			#do all the files have the same text?
-			#if they have the same text:
-			if same_text_for_all = 1
-				string$ = "'word$'"
-				appendInfoLine: "The word is 'string$' for all."
+			if fileReadable(txtgrd$)
+				Read from file... 'txtgrd$'
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
 				
-			#if they the text is different for every file:
-			else same_text_for_all = 2
-				select Sound 'object$'
-				Play
+				beginPause: "New textgrid" 
+				comment: "Do you want to create new textgrid?"
+				newnewnew = endPause: "1. Yes", "2. No", 2
+				if newnewnew = 2
+					select TextGrid 'object_name$'
+					Save as text file... 'input_directory$''object_name$'.TextGrid
+				else newnewnew = 1
+				select Sound 'object_name$'
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
 				
-				beginPause: "word"
+				
+				#do all the files have the same text?
+				#if they have the same text:
+				if same_text_for_all = 1
+					string$ = "'word$'"
+					appendInfoLine: "The word is 'string$' for all."
 					
-					comment: "what's the text"
-					text:"word",""
-				endPause:"Continue",1
-				string$ = "'word$'"
-			appendInfoLine: "The word is 'string$' for 'object$'."
+				#if they the text is different for every file:
+				else same_text_for_all = 2
+					select Sound 'object_name$'
+					Play
+					
+					beginPause: "word"
+						
+						comment: "what's the text"
+						text:"word",""
+					endPause:"Continue",1
+					string$ = "'word$'"
+				appendInfoLine: "The word is 'string$' for 'object_name$'.",i," out of ", number_files, " were processed."
+				endif
+				
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				#pause
+				#Save as text file... 'input_directory$''object_name$'.TextGrid
+				
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				editor TextGrid 'object_name$'
+				Align interval
+				pause Aligned.
+				endeditor
+				
+				#The following section is to get the necessary text for different tiers and intervals
+				#!!!!!It needs to change every time the task changes
+				
+				#change "Tier1" to your own tier name
+				#string3$ = extractWord$("'object_name$'", "Tier1")
+				#string4$ = left$("'string3$'",4)
+				#type$ = right$ ("'object_name$'", 1)
+				#pause Anything else to change?
+				
+				select TextGrid 'object_name$'
+				#Duplicate tier: 1, 2, "tone"
+				#Set interval text: 2, 2, "'string4$' - 'type$'"
+				#Duplicate tier: 3, 4, "identity"
+				#Set interval text: 4, 1, ""
+				#Set interval text: 4, 2, "syl1"
+				#Set interval text: 4, 3, "syl2"
+				#Set interval text: 4, 4, ""
+				#pause Save?
+				
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+				endif
+			else
+				select Sound 'object_name$'
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+				
+				
+				#do all the files have the same text?
+				#if they have the same text:
+				if same_text_for_all = 1
+					string$ = "'word$'"
+					appendInfoLine: "The word is 'string$' for all."
+					
+				#if they the text is different for every file:
+				else same_text_for_all = 2
+					select Sound 'object_name$'
+					Play
+					
+					beginPause: "word"
+						
+						comment: "what's the text"
+						text:"word",""
+					endPause:"Continue",1
+					string$ = "'word$'"
+				appendInfoLine: "The word is 'string$' for 'object_name$'.",i," out of ", number_files, " were processed."
+				endif
+				
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				#pause
+				#Save as text file... 'input_directory$''object_name$'.TextGrid
+				
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				editor TextGrid 'object_name$'
+				Align interval
+				pause Aligned.
+				endeditor
+		
+				select TextGrid 'object_name$'
+
+				Save as text file... 'input_directory$''object_name$'.TextGrid
 			endif
-			
-			select TextGrid 'object$'
-			
-			#write the string in the chosen tier and interval.
-			Set interval text: transtier, transinterval, "'string$'"
-			#pause
-			#Save as text file... 'input_directory$''object$'.TextGrid
-			
-			select TextGrid 'object$'
-			plus Sound 'object$'
-			editor TextGrid 'object$'
-			Align interval
-			pause Aligned.
-			endeditor
-			
-			#The following section is to get the necessary text for different tiers and intervals
-			#!!!!!It needs to change every time the task changes
-			
-			#change "Tier1" to your own tier name
-			#string3$ = extractWord$("'object$'", "Tier1")
-			#string4$ = left$("'string3$'",4)
-			#type$ = right$ ("'object$'", 1)
-			#pause Anything else to change?
-			
-			select TextGrid 'object$'
-			#Duplicate tier: 1, 2, "tone"
-			#Set interval text: 2, 2, "'string4$' - 'type$'"
-			#Duplicate tier: 3, 4, "identity"
-			#Set interval text: 4, 1, ""
-			#Set interval text: 4, 2, "syl1"
-			#Set interval text: 4, 3, "syl2"
-			#Set interval text: 4, 4, ""
-			#pause Save?
-			
-			Save as text file... 'input_directory$''object$'.TextGrid
-			
 		endfor
 	endif
 
@@ -218,7 +298,7 @@ elsif method = 2
 		
 		Create Strings as file list... list 'input_directory$'*.wav
 		number_files = Get number of strings
-		#pause Edit string list?
+		pause Edit string list?
 		
 		for i from 1 to number_files
 			select Strings transcription
@@ -227,78 +307,148 @@ elsif method = 2
 			select Strings list
 			current_file$ = Get string... i
 			Read from file... 'input_directory$''current_file$'
-			object$ = selected$ ("Sound")
-			
-			#create a textgrid
-			#to create more tiers:"Mary John bell", "bell"
-			To TextGrid: "'intervaltiers$'","'pointtiers$'"
-			select TextGrid 'object$'
-			plus Sound 'object$'
-			View & Edit
-			
-			pause continue?
-			select TextGrid 'object$'
-			
-			#write the string in the chosen tier and interval.
-			Set interval text: transtier, transinterval, "'string$'"
-			#pause
-			#Save as text file... 'input_directory$''object$'.TextGrid
-			
-			select TextGrid 'object$'
-						
-			Save as text file... 'input_directory$''object$'.TextGrid
-			appendInfoLine: "The word is 'string$' for 'object$'."
+			object_name$ = selected$ ("Sound")
+			txtgrd$ = input_directory$ + object_name$ +".TextGrid"
+			if fileReadable(txtgrd$)
+				Read from file... 'txtgrd$'
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
 				
-		endfor
-	
+				beginPause: "New textgrid" 
+				comment: "Do you want to create new textgrid?"
+				newnewnew = endPause: "1. Yes", "2. No", 2
+				if newnewnew = 2
+					select TextGrid 'object_name$'
+					Save as text file... 'input_directory$''object_name$'.TextGrid
+				else newnewnew = 1
+				select Sound 'object_name$'
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+			
+				pause continue?
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				select TextGrid 'object_name$'
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+				endif
+			else
+				select Sound 'object_name$'
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				select TextGrid 'object_name$'
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+			endif
+		endfor	
+				
+				
+		appendInfoLine: "The word is 'string$' for 'object_name$'."
+			
+			
 	# when you do not have a transcription file:
 	else trans = 2
 		Create Strings as file list... list 'input_directory$'*.wav
 		number_files = Get number of strings
-		#pause Edit string list?
+		pause Edit string list?
 		
 		for i from 1 to number_files
-		
 			select Strings list
 			current_file$ = Get string... i
 			Read from file... 'input_directory$''current_file$'
-			object$ = selected$ ("Sound")
+			object_name$ = selected$ ("Sound")
+			txtgrd$ = input_directory$ + object_name$ +".TextGrid"
 			
-			#create a textgrid
-			#to create more tiers:"Mary John bell", "bell"
-			To TextGrid: "'intervaltiers$'","'pointtiers$'"
-			select TextGrid 'object$'
-			plus Sound 'object$'
-			View & Edit
-			
-			#do all the files have the same text?
-			#if they have the same text:
-			if same_text_for_all = 1
-				string$ = "'word$'"
-				appendInfoLine: "The word is 'string$' for all."
+			if fileReadable(txtgrd$)
+				Read from file... 'txtgrd$'
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
 				
-			#if they the text is different for every file:
-			else same_text_for_all = 2
-				select Sound 'object$'
-				Play
-				beginPause: "word"
-					comment: "what's the text"
-					text:"word",""
-				endPause:"Continue",1
-				string$ = "'word$'"
-			appendInfoLine: "The word is 'string$' for 'object$'."
-			endif
-			
-			select TextGrid 'object$'
-			
-			#write the string in the chosen tier and interval. 
-			Set interval text: transtier, transinterval, "'string$'"
-			select TextGrid 'object$'
-			Save as text file... 'input_directory$''object$'.TextGrid
-			select Strings list
-			filenumber = Get number of strings
-			if filenumber > 1
-				Remove string: 1
+				beginPause: "New textgrid" 
+				comment: "Do you want to create new textgrid?"
+				newnewnew = endPause: "1. Yes", "2. No", 2
+				if newnewnew = 2
+					select TextGrid 'object_name$'
+					Save as text file... 'input_directory$''object_name$'.TextGrid
+				else newnewnew = 1
+				select Sound 'object_name$'
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+				
+				
+				#do all the files have the same text?
+				#if they have the same text:
+				if same_text_for_all = 1
+					string$ = "'word$'"
+					appendInfoLine: "The word is 'string$' for all."
+					
+				#if they the text is different for every file:
+				else same_text_for_all = 2
+					select Sound 'object_name$'
+					Play
+					
+					beginPause: "word"
+						
+						comment: "what's the text"
+						text:"word",""
+					endPause:"Continue",1
+					string$ = "'word$'"
+				appendInfoLine: "The word is 'string$' for 'object_name$'.",i," out of ", number_files, " were processed."
+				endif
+				
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				select TextGrid 'object_name$'
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+				endif
+			else
+				select Sound 'object_name$'
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+				
+				
+				#do all the files have the same text?
+				#if they have the same text:
+				if same_text_for_all = 1
+					string$ = "'word$'"
+					appendInfoLine: "The word is 'string$' for all."
+					
+				#if they the text is different for every file:
+				else same_text_for_all = 2
+					select Sound 'object_name$'
+					Play
+					
+					beginPause: "word"
+						
+						comment: "what's the text"
+						text:"word",""
+					endPause:"Continue",1
+					string$ = "'word$'"
+				appendInfoLine: "The word is 'string$' for 'object_name$'.",i," out of ", number_files, " were processed."
+				endif
+				
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				select TextGrid 'object_name$'
+				Save as text file... 'input_directory$''object_name$'.TextGrid
 			endif
 		endfor
 	endif
@@ -319,39 +469,60 @@ else method = 3
 	Create Strings as file list... list 'input_directory$'*.wav
 	number_files = Get number of strings
 	select Strings list
-	#pause Edit string list?
+	pause Edit string list?
 	
 	for i from 1 to number_files
 		select Strings list
-		current_file2$ = Get string... i
-		Read from file... 'input_directory$''current_file2$'
-		object2$ = selected$ ("Sound")
-		Read from file... 'input_directory$''object2$'.TextGrid
-		select TextGrid 'object2$'
-		plus Sound 'object2$'
-		View & Edit
-		
-		editor TextGrid 'object2$'
-		Align interval
-		pause Aligned.
-		endeditor
-		
-		#The following section is to get the necessary text for different tiers and intervals
-		#!!!!!It needs to change every time the task changes
-		#string3$ = extractWord$("'object2$'", "ci") 
-		#string4$ = left$("'string3$'",4)
-		#type$ = right$ ("'object2$'", 1)
-		#pause Anything else to change?
-		select TextGrid 'object2$'
-		#Duplicate tier: 1, 2, "tone"
-		#Set interval text: 2, 2, "'string4$' - 'type$'"
-		#Duplicate tier: 3, 4, "identity"
-		#Set interval text: 4, 1, ""
-		#Set interval text: 4, 2, "syl1"
-		#Set interval text: 4, 3, "syl2"
-		#Set interval text: 4, 4, ""
-		#pause Save?
-		Save as text file... 'input_directory$''object2$'.TextGrid
+		current_file$ = Get string... i
+		Read from file... 'input_directory$''current_file$'
+		object_name$ = selected$ ("Sound")
+		txtgrd$ = input_directory$ + object_name$ +".TextGrid"
+			if fileReadable(txtgrd$)
+				Read from file... 'txtgrd$'
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+				
+				editor TextGrid 'object_name$'
+				Align interval
+				pause Aligned.
+				endeditor
+				
+				select TextGrid 'object_name$'
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+			else
+				select Sound 'object_name$'
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				plus Sound 'object_name$'
+				View & Edit
+
+				select Sound 'object_name$'
+				Play
+				beginPause: "word"
+				comment: "what's the text"
+				text:"word",""
+				endPause:"Continue",1
+				string$ = "'word$'"
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				editor TextGrid 'object_name$'
+				Align interval
+				pause Aligned.
+				endeditor
+
+				select TextGrid 'object_name$'
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+				
+				
+				appendInfoLine: "The word is 'string$' for 'object_name$'.",i," out of ", number_files, " were processed."
+			endif
+
+
 		
 	endfor
 	select all
