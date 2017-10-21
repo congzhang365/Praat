@@ -10,7 +10,7 @@
 
 form Files
 	comment Input folder
-	text input_directory C:\Users\rolin\Desktop\trial\222\
+	text input_directory C:\Users\
 	
 	comment Choose method:
 	optionmenu method: 1
@@ -26,7 +26,7 @@ form Files
 	comment If same, the text is:
 	text word
 	comment if transcription, transcription file [with directory]:
-	text transdir C:\Users\rolin\Desktop\trial\222\234.txt
+	text transdir C:\Users\234.txt
 	comment all tier names
 	sentence intervaltiers text tone
 	sentence pointtiers
