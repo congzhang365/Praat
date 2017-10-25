@@ -6,11 +6,11 @@
 
 ## Written by Cong Zhang
 ## Language and Brain Laboratory, University of Oxford
-## Last updated 21 Oct 2017
+## Last updated 25 Oct 2017
 
 form Files
 	comment Input folder
-	text input_directory C:\Users\rolin\Desktop\trial\222\
+	text input_directory C:\Users\
 	
 	comment Choose method:
 	optionmenu method: 1
@@ -26,13 +26,15 @@ form Files
 	comment If same, the text is:
 	text word
 	comment if transcription, transcription file [with directory]:
-	text transdir C:\Users\rolin\Desktop\trial\222\234.txt
+	text transdir C:\Users\
 	comment all tier names
 	sentence intervaltiers text tone
 	sentence pointtiers
 	comment which tier and interval?
 	integer transtier 1
 	integer transinterval 2
+	comment only certain files?
+	sentence keyword
 endform
 
 #New section in Praat info window
@@ -61,7 +63,7 @@ if method = 1
 		Rename... transcription
 		
 		
-		Create Strings as file list... list 'input_directory$'*.wav
+		Create Strings as file list... list 'input_directory$'*'keyword$'*wav
 		number_files = Get number of strings
 		pause Edit string list?
 		
@@ -115,16 +117,18 @@ if method = 1
 			else
 				select Sound 'object_name$'
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				Insert boundary: 1, 0.01
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
 				View & Edit
-			select TextGrid 'object_name$'
+				
+				select TextGrid 'object_name$'
 				
 				#write the string in the chosen tier and interval.
 				Set interval text: transtier, transinterval, "'string$'"
 				#pause
 				#Save as text file... 'input_directory$''object_name$'.TextGrid
-				
+				pause Edit?
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
 				editor TextGrid 'object_name$'
@@ -136,6 +140,7 @@ if method = 1
 
 				Save as text file... 'input_directory$''object_name$'.TextGrid
 			endif
+		appendInfoLine: "The word is 'string$' for 'object_name$'.",i," out of ", number_files, " were processed."
 		endfor	
 	
 				
@@ -144,7 +149,7 @@ if method = 1
 			
 	# when you do not have a transcription file:
 	else trans = 2
-		Create Strings as file list... list 'input_directory$'*.wav
+		Create Strings as file list... list 'input_directory$'*'keyword$'*wav
 		number_files = Get number of strings
 		pause Edit string list?
 		
@@ -296,7 +301,7 @@ elsif method = 2
 		Rename... transcription
 		
 		
-		Create Strings as file list... list 'input_directory$'*.wav
+		Create Strings as file list... list 'input_directory$'*'keyword$'*wav
 		number_files = Get number of strings
 		pause Edit string list?
 		
@@ -357,7 +362,7 @@ elsif method = 2
 			
 	# when you do not have a transcription file:
 	else trans = 2
-		Create Strings as file list... list 'input_directory$'*.wav
+		Create Strings as file list... list 'input_directory$'*'keyword$'*wav
 		number_files = Get number of strings
 		pause Edit string list?
 		
@@ -466,7 +471,7 @@ elsif method = 2
 # If the textgrid exists, and it has been labelled and you only need to align it:
 # The textgrid files must be in the input directory
 else method = 3
-	Create Strings as file list... list 'input_directory$'*.wav
+	Create Strings as file list... list 'input_directory$'*'keyword$'*wav
 	number_files = Get number of strings
 	select Strings list
 	pause Edit string list?
