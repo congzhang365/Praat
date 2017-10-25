@@ -2,11 +2,11 @@
 #This script allows you to copy sound files into different folders according to their quality/rating/other aspects.
 
 form Enter directory and search string
-	sentence Directory C:\Users\rolin\Desktop\trial\222\
+	sentence Directory C:\Users\
 	sentence Word SJ101
 	sentence Filetype wav
 	comment Save selected objects...
-	sentence Saveto C:\Users\rolin\Desktop\trial\222\
+	sentence Saveto C:\Users\
 	comment Name of log
 	sentence logname log1
 endform
