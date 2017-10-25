@@ -40,12 +40,15 @@ endform
 #New section in Praat info window
 appendInfoLine:"------",date$(),"------"
 
+#Getting folder name
+
+note1 = length(input_directory$)-1
+note2$ = left$("'input_directory$'",note1)
+note3 = rindex ("'note2$'","\")
+note4 = note1-note3
 
 
-#This is to get the folder name when it has three characters
-#Change the number '3' if it does not have three characters
-string1$ = right$("'input_directory$'",4)
-folder$ = left$("'string1$'",3)
+folder$ = right$("'note2$'",note4)
 appendInfoLine: "Processing folder ['folder$']"
 
 
