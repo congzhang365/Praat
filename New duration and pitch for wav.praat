@@ -4,6 +4,8 @@
 # according to a new duration and a new pitch. 
 # The processed files will have equal duration and flattened pitch.
 # A similar script is: 'Synthesize words of the same length and f0.praat'
+#
+# 17 Aug: Fixed bugs.
 
 form Synthesize speech according to a txt list
 comment Give the path of the files you want to process:
@@ -11,7 +13,7 @@ sentence listdir C:\Users\Cong\Desktop\Desktop\test\trial\333\test\
 
 comment Save selected objects to...
 boolean save_file 1	
-sentence Saveto C:\Users\Cong\Desktop\Desktop\test\trial\333\test\
+sentence Saveto C:\Users\Cong\Desktop\Desktop\test\trial\333\test\res\
 sentence suffix
 comment What is the new duration (in sec):
    positive new_dur 0.25
@@ -37,6 +39,7 @@ for x from 1 to number_of_files
     dur = Get duration
     To Manipulation: 0.01, 75, 600
     Create DurationTier... 'current_file$' 0 'new_dur'
+    Add point... 0 'new_dur'/'dur'
     select Manipulation 'current_file$'
     plus DurationTier 'current_file$'
     Replace duration tier
@@ -49,10 +52,11 @@ for x from 1 to number_of_files
     new_dur_name$ = "'current_file$'_'new_dur_string'"
     select Sound 'current_file$'
     Rename: "'new_dur_name$'"
-
+    
     if delete_useless_file = 1
         select Sound 'current_file$'
         plus Manipulation 'current_file$'
+        plus DurationTier 'current_file$'
         Remove
     endif
     
@@ -92,9 +96,9 @@ for x from 1 to number_of_files
         endif
     else
         new_f0_name$ = "'new_dur_name$'"
-        if delete_useless_file = 1
-        select SpeechSynthesizer 'voice_name$'_'voice_variant$'
-            Remove
+        if play_after_synthesis = 1
+           select Sound 'new_dur_name$'
+           Play
         endif
     endif
 		
