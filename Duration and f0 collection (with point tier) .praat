@@ -23,13 +23,13 @@
 
 form Analyze duration and pitches from labeled segments in files
 	comment Directory of sound files
-	text sound_directory C:\Users\sprin\Dropbox (Personal)\Journal Article\TJ_YNQ\data\audio\test\
+	text sound_directory C:\Users\test\
 	sentence Sound_file_extension .wav
 	comment Directory of TextGrid files
-	text textGrid_directory C:\Users\sprin\Dropbox (Personal)\Journal Article\TJ_YNQ\data\audio\test\
+	text textGrid_directory C:\Users\\test\
 	sentence TextGrid_file_extension .TextGrid
 	comment Full path of the resulting text file:
-	text resultfile C:\Users\sprin\Dropbox (Personal)\Journal Article\TJ_YNQ\data\audio\test\\pitches.csv
+	text resultfile C:\Users\pitches.csv
 	comment Which interval tier do you want to analyze?
 	integer Tier 3
 	comment Which point tier do you want to analyze?
