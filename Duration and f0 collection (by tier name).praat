@@ -30,13 +30,13 @@ form Analyze duration and pitches from labeled segments in files
 	text textGrid_directory C:\Users\
 	sentence TextGrid_file_extension .TextGrid
 	comment Full path of the resulting text file:
-	text resultfile C:\Users\pitches.txt
+	text resultfile C:\Users\pitches.csv
 	comment Which tier do you want to analyze?
 	sentence Tier Seg
 	comment Pitch analysis parameters
 	positive Time_step 0.01
 	positive Minimum_pitch_(Hz) 75
-	positive Maximum_pitch_(Hz) 800
+	positive Maximum_pitch_(Hz) 500
 endform
 
 # Here, you make a listing of all the sound files in a directory.
@@ -54,7 +54,7 @@ endif
 # Write a row with column titles to the result file:
 # (remember to edit this if you add or change the analyses!)
 
-titleline$ = "Filename	Segment label	StartTime	EndTime	Duration(s)	Maximum pitch (Hz)	maxTime	Minimum pitch (Hz)	minTime	Mean pitch(Hz)	Pitch Range(Hz)	'newline$'"
+titleline$ = "filename,segment,StartTime,EndTime,duration,maxF0_Hz,maxTime,minF0_Hz,minTime,meanF0_Hz,f0Range_Hz	'newline$'"
 fileappend "'resultfile$'" 'titleline$'
 
 # Go through all the sound files, one by one:
@@ -96,7 +96,7 @@ for ifile to numberOfFiles
 				printline 'pitchmean'
 				pitchrange = pitchmax - pitchmin
 				# Save result to text file:
-				resultline$ = "'soundname$'	'label$'	'start'	'end'	'duration'	'pitchmax'	'maxTime'	'pitchmin'	'minTime'	'pitchmean'	'pitchrange'	'newline$'"
+				resultline$ = "'soundname$','label$','start','end','duration','pitchmax','maxTime','pitchmin','minTime','pitchmean','pitchrange','newline$'"				
 				fileappend "'resultfile$'" 'resultline$'
 				select TextGrid 'soundname$'
 			endif
