@@ -1,9 +1,16 @@
-## Modified by Cong Zhang. Email me at: cong.zhang@ling-phil.ox.ac.uk
-## Language and Brain Laboratory, University of Oxford
-## Last updated 28 Aug 2016
+## Last updated 26/06/2020
+## Dr. Cong Zhang || Language and Brain Laboratory, University of Oxford || @SPRINT, University of Kent
 ##
 ## This script is edited based on the script
 ## 'save_labeled_intervals_to_wav_sound_files.praat' by Mietta Lennes.
+##
+## The current script has the following new features:
+## 1. Run through selected files;
+## 2. Save small sounds with original file name;
+## 3. Continue in one go without pressing 'continue';
+## 4. If you need to add index numbers, get rid of the hash marks in the last few lines before 'Save ...'
+## 5. No margin.
+##
 ## Original comments by Mietta Lennes:
 # This script saves each interval in the selected IntervalTier of a TextGrid to a separate WAV sound file.
 # The source sound must be a LongSound object, and both the TextGrid and 
@@ -12,24 +19,14 @@
 # Files are named with the corresponding interval labels (plus a running index number when necessary).
 # NOTE: You have to take care yourself that the interval labels do not contain forbidden characters!!!!
 # 
-## Cong's edits:
-## 1. Run through selected files;
-## 2. Save small sounds with original file name;
-## 3. Continue in one go without pressing 'continue';
-## 4. If you need to add index numbers, get rid of the hash marks in the last few lines before 'Save ...'
-## 5. No margin.
-## 6. Note: there can be bugs in this script. Sometimes it only deals with the first few files. 
-##    Move files to different folders if this happens. 
-##    Would appreciate it if you could let me know if you know why this happens.
-##
 # This script is distributed under the GNU General Public License.
 
 form Save intervals to small WAV sound files
 	comment Directory of sound files
-	text sound_directory D:\tmp\
+	text sound_directory C:\Users\sprin\Desktop\test\
 	sentence Sound_file_extension .wav
 	comment Directory of TextGrid files
-	text textGrid_directory D:\tmp\
+	text textGrid_directory C:\Users\sprin\Desktop\test\
 	comment Which IntervalTier in this TextGrid would you like to process?
 	integer Tier 1
 	comment Starting and ending at which interval? 
@@ -41,9 +38,9 @@ form Save intervals to small WAV sound files
 	#comment Give a small margin for the files if you like:
 	#positive Margin_(seconds) 0.000001
 	comment Give the folder where to save the sound files:
-	sentence Folder D:\tmp\
+	sentence Folder C:\Users\sprin\Desktop\test\output\
 	comment Give an optional prefix for all filenames:
-	sentence Prefix TMP_
+	sentence Prefix 
 	comment Give an optional suffix for all filenames (.wav will be added anyway):
 	sentence Suffix 
 endform
@@ -126,12 +123,12 @@ for x from 1 to numberOfFiles
 			intervalend = Get end point... tier interval
 			select LongSound 'soundname$'
 			Extract part... intervalstart intervalend no
-			filename$ = soundname$
-			intervalfile$ = "'folder$'" + "'prefix$'" + "'filename$'" + "'suffix$'" + ".wav"
+			filename$ = intname$
+			intervalfile$ = "'folder$'" + "'prefix$'" + "'soundname$'_" + "'filename$'" + "'suffix$'" + ".wav"
 			# indexnumber = 0
 			# while fileReadable (intervalfile$)
 				# indexnumber = indexnumber + 1
-				# intervalfile$ = "'folder$'" + "'prefix$'" + "'filename$'" + "'suffix$''indexnumber'" + ".wav"
+				# intervalfile$ = "'folder$'" + "'prefix$'" + "'soundname$'_" + "'filename$'" + "'suffix$'" + ".wav"
 			# endwhile
 			Save as WAV file... 'intervalfile$'
 			Remove
