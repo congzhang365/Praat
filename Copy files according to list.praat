@@ -1,24 +1,22 @@
 ## Copy files from one folder to another folder according to a list
 
-# Note: The string list has to contain file extensions.
-# The file extensions need to be the same as the files you'd like to copy.
-# This can be improved in the future. 
+# Note: The string list CANNOT have file extensions.
 
 ## Written by Cong Zhang
 ## Language and Brain Laboratory, University of Oxford
-## Last updated 21 Oct 2017
+## Last updated 10 June 2020
 
 form Enter directory and search string
 	comment The directory that your files are from:
-	sentence Directory C:\Users\rolin\Desktop\trial\222\
+	sentence Directory C:\Users\
 	comment What is your list?
-	sentence listdir C:\Users\rolin\Desktop\trial\222\123.txt
+	sentence listdir C:\Users\list.txt
 	#sentence Word 
 	#sentence Filetype wav
 	comment Save selected objects to...
-	sentence Saveto C:\Users\rolin\Desktop\trial\222\
+	sentence Saveto C:\Users\
 	comment Choose to save wav or TextGrid
-	choice filetype:
+	choice filetype: 1
 		button wav
 		button TextGrid
 	comment Name of skipped file log
@@ -45,9 +43,10 @@ if filetype$ = "wav"
 	for x from 1 to number_of_files
 		select Strings list
 		current_file$ = Get string... x
-		full_name$ = directory$ + current_file$
+		full_name$ = directory$ + current_file$ + ".wav"
+		appendInfoLine: "'full_name$'"
 		if fileReadable(full_name$)
-			Read from file... 'directory$''current_file$'
+			Read from file... 'full_name$'
 			object_name$ = selected$ ("Sound")
 			Save as WAV file... 'Saveto$'\'object_name$'.wav
 			select all
