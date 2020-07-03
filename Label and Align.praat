@@ -91,7 +91,7 @@ if method = 1
 				if newnewnew = 2
 					select TextGrid 'object_name$'
 					Save as text file... 'input_directory$''object_name$'.TextGrid
-				else newnewnew = 1
+				elsif newnewnew = 1
 				select Sound 'object_name$'
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
 				select TextGrid 'object_name$'
@@ -151,7 +151,7 @@ if method = 1
 			
 			
 	# when you do not have a transcription file:
-	else trans = 2
+	elsif trans = 2
 		Create Strings as file list... list 'input_directory$'*'keyword$'*wav
 		number_files = Get number of strings
 		pause Edit string list?
@@ -175,7 +175,7 @@ if method = 1
 				if newnewnew = 2
 					select TextGrid 'object_name$'
 					Save as text file... 'input_directory$''object_name$'.TextGrid
-				else newnewnew = 1
+				elsif newnewnew = 1
 				select Sound 'object_name$'
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
 				select TextGrid 'object_name$'
@@ -190,7 +190,7 @@ if method = 1
 					appendInfoLine: "The word is 'string$' for all."
 					
 				#if they the text is different for every file:
-				else same_text_for_all = 2
+				elsif same_text_for_all = 2
 					select Sound 'object_name$'
 					Play
 					
@@ -253,7 +253,7 @@ if method = 1
 					appendInfoLine: "The word is 'string$' for all."
 					
 				#if they the text is different for every file:
-				else same_text_for_all = 2
+				elsif same_text_for_all = 2
 					select Sound 'object_name$'
 					Play
 					
@@ -329,7 +329,7 @@ elsif method = 2
 				if newnewnew = 2
 					select TextGrid 'object_name$'
 					Save as text file... 'input_directory$''object_name$'.TextGrid
-				else newnewnew = 1
+				elsif newnewnew = 1
 				select Sound 'object_name$'
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
 				select TextGrid 'object_name$'
@@ -364,7 +364,7 @@ elsif method = 2
 			
 			
 	# when you do not have a transcription file:
-	else trans = 2
+	elsif trans = 2
 		Create Strings as file list... list 'input_directory$'*'keyword$'*wav
 		number_files = Get number of strings
 		pause Edit string list?
@@ -388,7 +388,7 @@ elsif method = 2
 				if newnewnew = 2
 					select TextGrid 'object_name$'
 					Save as text file... 'input_directory$''object_name$'.TextGrid
-				else newnewnew = 1
+				elsif newnewnew = 1
 				select Sound 'object_name$'
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
 				select TextGrid 'object_name$'
@@ -403,7 +403,7 @@ elsif method = 2
 					appendInfoLine: "The word is 'string$' for all."
 					
 				#if they the text is different for every file:
-				else same_text_for_all = 2
+				elsif same_text_for_all = 2
 					select Sound 'object_name$'
 					Play
 					
@@ -438,7 +438,7 @@ elsif method = 2
 					appendInfoLine: "The word is 'string$' for all."
 					
 				#if they the text is different for every file:
-				else same_text_for_all = 2
+				elsif same_text_for_all = 2
 					select Sound 'object_name$'
 					Play
 					
@@ -473,7 +473,7 @@ elsif method = 2
 ######################################
 # If the textgrid exists, and it has been labelled and you only need to align it:
 # The textgrid files must be in the input directory
-else method = 3
+elsif method = 3
 	Create Strings as file list... list 'input_directory$'*'keyword$'*wav
 	number_files = Get number of strings
 	select Strings list
