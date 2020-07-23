@@ -6,7 +6,7 @@
 form Enter directory and search string
 # Be sure not to forget the slash (Windows: backslash, OSX: forward
 # slash)  at the end of the directory name.
-	sentence Directory C:\Users\sprin\Desktop\test/
+	sentence Directory C:\Users\
 #  Leaving the "Word" field blank will open all sound files in a
 #  directory. By specifying a Word, you can open only those files
 #  that begin with a particular sequence of characters. For example,
