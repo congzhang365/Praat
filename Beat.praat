@@ -38,14 +38,19 @@ if fileReadable(txtgrd$)
 	
 else
 	select Sound 'object_name$'
-	To TextGrid: "beat", ""
+	To TextGrid: "beat", "beat"
 	select TextGrid 'object_name$'
 endif
 
 i = 0
 repeat
-	Insert boundary: 1, intercept + (60/tempo)*i
-	i = i + 1
+	if i = 0 or i mod 4 = 0
+		Insert point: 1, intercept + (60/tempo)*i, "strong"
+		i = i + 1
+	else
+		Insert point: 1, intercept + (60/tempo)*i, "weak"
+		i = i + 1
+	endif
 until intercept + (60/tempo)*i > audio_dur
 
 
