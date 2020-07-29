@@ -4,7 +4,7 @@
 ## Method 2: create textgrids - label sound file
 ## Method 3: autoalign existing textgrids
 
-## Written by Cong Zhang
+## By Cong Zhang
 ## Language and Brain Laboratory, University of Oxford
 ## Last updated 25 Oct 2017
 
