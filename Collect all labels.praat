@@ -28,6 +28,8 @@ if fileReadable (resultfile$)
 	pause The result file 'resultfile$' already exists! Do you want to overwrite it?
 	filedelete 'resultfile$'
 endif
+titleline$ = "filename,segment,StartTime,EndTime,duration	'newline$'"
+fileappend "'resultfile$'" 'titleline$'
 
 # Go through all the sound files, one by one:
 for ifile to numberOfFiles
@@ -44,8 +46,11 @@ for ifile to numberOfFiles
 		label$ = Get label of interval... tier interval
 		if label$ <> ""
 			# Save result to text file:
-			resultline$ = "'tg$''tab$''label$''newline$'"
-			fileappend "'resultfile$'" 'resultline$'
+			start = Get starting point... tier interval
+			end = Get end point... tier interval
+			duration = end - start
+			resultline$ = "'tg$','label$','start','end','duration'	'newline$'"
+				fileappend "'resultfile$'" 'resultline$'
 			select TextGrid 'tg$'
 		endif
 	endfor
