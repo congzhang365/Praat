@@ -20,7 +20,7 @@ form Analyze pitches from labeled segments in files
 	comment Pitch analysis parameters
 	positive Time_step 0.01
 	positive Minimum_pitch_(Hz) 75
-	positive Maximum_pitch_(Hz) 800
+	positive Maximum_pitch_(Hz) 500
 	comment Subject name
 	text subject_name
 endform
