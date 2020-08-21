@@ -14,7 +14,7 @@ form Analyze formants from labeled segments in files
 	text textGrid_directory C:\Users\
 	sentence TextGrid_file_extension .TextGrid
 	comment Full path of the resulting text file:
-	text resultfile C:\Users\result.txt
+	text resultfile C:\Users\results.txt
 	positive Time_step 0.01
 	positive Minimum_pitch_(Hz) 50
 	positive Maximum_pitch_(Hz) 650
