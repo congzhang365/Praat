@@ -15,7 +15,8 @@ form Enter directory and search string
 	real intercept 0.5
 	comment What is the tempo?
 	real tempo 150
-	comment Save selected TextGrid to... 
+	comment Save selected TextGrid?
+	boolean save_tg 0
 	sentence save_to C:\folder\
 endform
 
@@ -25,8 +26,8 @@ appendInfoLine:"------",date$(),"------"
 
 object_name$ = selected$ ("Sound")
 audio_dur = Get finishing time
+txtgrd$ = object_name$ + ".TextGrid"
 
-txtgrd$ = save_to$ + "\" + object_name$ +".TextGrid"
 if fileReadable(txtgrd$)
 	Read from file... 'txtgrd$'
 	select TextGrid 'object_name$'
@@ -34,24 +35,26 @@ if fileReadable(txtgrd$)
 		comment: "Which tier would you like to add?"
 		natural: "tier_num", 1
 	endPause: "ok", 1
-	Insert interval tier: tier_num, "beat" 
+	Insert point tier: tier_num, "beat" 
 	
 else
 	select Sound 'object_name$'
 	To TextGrid: "beat", "beat"
+	tier_num = 1
 	select TextGrid 'object_name$'
 endif
 
 i = 0
 repeat
 	if i = 0 or i mod 4 = 0
-		Insert point: 1, intercept + (60/tempo)*i, "strong"
+		Insert point: tier_num, intercept + (60/tempo)*i, "strong"
 		i = i + 1
 	else
-		Insert point: 1, intercept + (60/tempo)*i, "weak"
+		Insert point: tier_num, intercept + (60/tempo)*i, "weak"
 		i = i + 1
 	endif
 until intercept + (60/tempo)*i > audio_dur
 
-
-Save as text file... 'save_to$'\'object_name$'.TextGrid
+if save_tg = 1
+	Save as text file... 'save_to$'\'object_name$'.TextGrid
+endif
