@@ -8,13 +8,13 @@
 
 form Analyze formants from labeled segments in files
 	comment Directory of sound files
-	text sound_directory C:\Users\sprin\Desktop\10percent\
+	text sound_directory C:\Users\
 	sentence Sound_file_extension .wav
 	comment Directory of TextGrid files
-	text textGrid_directory C:\Users\sprin\Desktop\10percent\
+	text textGrid_directory C:\Users\
 	sentence TextGrid_file_extension .TextGrid
 	comment Full path of the resulting text file:
-	text resultfile C:\Users\sprin\Desktop\10percent\10part_H6N.txt
+	text resultfile C:\Users\result.txt
 	positive Time_step 0.01
 	positive Minimum_pitch_(Hz) 50
 	positive Maximum_pitch_(Hz) 650
