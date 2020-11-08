@@ -12,12 +12,12 @@ form Enter the directory for your audio files:
 	comment Enter the directory for your Textgrids:
 	sentence tg_dir C:\Users\
 	comment Only show files containing:
-	sentence Word
+	sentence word
 	comment What is the format of your audio file?
-	sentence Filetype wav
+	sentence filetype wav
 endform
 
-Create Strings as file list... list 'audio_dir$'*'Word$'*'filetype$'
+Create Strings as file list... list 'audio_dir$'*'word$'*'filetype$'
 pause Would you like to chang the file list?
 number_of_files = Get number of strings
 for x from 1 to number_of_files
