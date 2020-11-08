@@ -8,7 +8,7 @@
 
 form Check whether word boundaries match phoneme boundaries
 	comment Directory of TextGrid files
-	text textGrid_directory C:\Users\sprin\SPRINT Dropbox\Cong Zhang\Other projects\Singing\Music_Linguistics\ASA\final_Mandarin\
+	text textGrid_directory C:\Users\
 	comment Which interval tier do you want to analyze?
 	integer word_tier 3
 	integer phoneme_tier 4
@@ -96,11 +96,9 @@ for ifile to numberOfFiles
 
 				elsif word_start > phoneme_start
 					View & Edit
-					appendInfoLine:"Boundary number: '",i,"' does not match"	
+					appendInfoLine:"Boundary number: '",i,"' does not match"
 					Insert boundary: word_tier, phoneme_start
 					Remove boundary at time: word_tier, word_start
-					Insert boundary: word_tier-1, phoneme_start
-					Remove boundary at time: word_tier-1, word_start
 					editor:"TextGrid " + tg_name$	
 						Zoom: word_start-0.1, word_start+0.1
 						pause Was it correct?
