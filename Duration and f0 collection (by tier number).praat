@@ -34,12 +34,14 @@ form Analyze duration and pitches from labeled segments in files
 	comment Full path of the resulting text file:
 	text resultfile C:\Users\pitches.csv
 	comment Which tier do you want to analyze?
-	integer Tier 1
+	integer segment_tier 1
+	integer word_tier 2
 	comment Pitch analysis parameters
 	positive Time_step 0.01
 	positive Minimum_pitch_(Hz) 75
 	positive Maximum_pitch_(Hz) 500
 endform
+Text writing preferences: "UTF-8"
 
 # Here, you make a listing of all the sound files in a directory.
 # The example gets file names ending with ".wav" from C:\Users\
@@ -54,7 +56,7 @@ endif
 
 # Write a row with column titles to the result file(comma-delimited):
 # (remember to edit this if you add or change the analyses!)
-titleline$ = "filename,segment,StartTime,EndTime,duration,maxF0_Hz,maxTime,minF0_Hz,minTime,meanF0_Hz,f0Range_Hz	'newline$'"
+titleline$ = "filename	segment	word	StartTime	EndTime	duration	maxF0_Hz	maxTime	minF0_Hz	minTime	meanF0_Hz	f0Range_Hz'newline$'"
 fileappend "'resultfile$'" 'titleline$'
 
 # Go through all the sound files, one by one:
@@ -71,29 +73,31 @@ for ifile to numberOfFiles
 	gridfile$ = "'textGrid_directory$''soundname$''textGrid_file_extension$'"
 	if fileReadable (gridfile$)
 		Read from file... 'gridfile$'
-		numberOfIntervals = Get number of intervals... tier
-		# Pass through all intervals in the selected tier:
+		numberOfIntervals = Get number of intervals... segment_tier
+		# Pass through all intervals in the selected segment_tier:
 		for interval to numberOfIntervals
-			label$ = Get label of interval... tier interval
+			label$ = Get label of interval... segment_tier interval
 			if label$ <> ""
 				# if the interval has an unempty label, get its start and end, and duration:
-				start = Get starting point... tier interval
-				end = Get end point... tier interval
+				start = Get starting point... segment_tier interval
+				end = Get end point... segment_tier interval
 				duration = end - start
+				word_interval = Get interval at time: word_tier, start
+				word_label$ = Get label of interval: word_tier, word_interval
 				# get pitch maximum, pitch minimum, time of pitch maximum, 
 				# time of pitch minimum, mean pitch, and pitch range at that interval:
 				select Pitch 'soundname$'
 				pitchmax = Get maximum: start, end, "Hertz", "Parabolic"
-				printline 'pitchmax'
+				# printline 'pitchmax'
 				maxTime = Get time of maximum: start, end, "Hertz", "Parabolic"
 				pitchmin = Get minimum: start, end, "Hertz", "Parabolic"
-				printline 'pitchmin'
+				# printline 'pitchmin'
 				minTime = Get time of minimum: start, end, "Hertz", "Parabolic"	
 				pitchmean = Get mean: start, end, "Hertz"
-				printline 'pitchmean'
+				# printline 'pitchmean'
 				pitchrange = pitchmax - pitchmin
 				# Save result to text file:
-				resultline$ = "'soundname$','label$','start','end','duration','pitchmax','maxTime','pitchmin','minTime','pitchmean','pitchrange','newline$'"
+				resultline$ = "'soundname$'	'label$'	'word_label$'	'start'	'end'	'duration'	'pitchmax'	'maxTime'	'pitchmin'	'minTime'	'pitchmean'	'pitchrange''newline$'"
 				fileappend "'resultfile$'" 'resultline$'
 				select TextGrid 'soundname$'
 			endif
