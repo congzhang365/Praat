@@ -1,4 +1,4 @@
-## Last updated 26/06/2020
+## Last updated 20/04/2021
 ## Dr. Cong Zhang || Language and Brain Laboratory, University of Oxford || @SPRINT, University of Kent
 ##
 ## This script is edited based on the script
@@ -29,9 +29,9 @@ form Save intervals to small WAV sound files
 	text textGrid_directory C:\Users\sprin\Desktop\test\
 	comment Which IntervalTier in this TextGrid would you like to process?
 	integer Tier 1
-	comment Starting and ending at which interval? 
-	integer Start_from 1
-	integer End_at_(0=last) 0
+	# comment Starting and ending at which interval? 
+	# integer Start_from 1
+	# integer End_at_(0=last) 0
 	boolean Exclude_empty_labels 1
 	boolean Exclude_intervals_labeled_as_xxx 1
 	boolean Exclude_intervals_starting_with_dot_(.) 1
@@ -64,15 +64,15 @@ for x from 1 to numberOfFiles
 	gridfile$ = selected$ ("TextGrid")
     #plus LongSound 'soundname$'
 	numberOfIntervals = Get number of intervals... tier
-	if start_from > numberOfIntervals
-		exit There are not that many intervals in the IntervalTier!
-	endif
-	if end_at > numberOfIntervals
-		end_at = numberOfIntervals
-	endif
-	if end_at = 0
-		end_at = numberOfIntervals
-	endif
+	# if start_from > numberOfIntervals
+		# exit There are not that many intervals in the IntervalTier!
+	# endif
+	# if end_at > numberOfIntervals
+		# end_at = numberOfIntervals
+	# endif
+	# if end_at = 0
+		# end_at = numberOfIntervals
+	# endif
 
 	# Default values for variables
 	files = 0
@@ -104,7 +104,7 @@ for x from 1 to numberOfFiles
 	# pause 'files' sound files will be saved. Continue?
 
 	# Loop through all intervals in the selected tier of the TextGrid
-	for interval from start_from to end_at
+	for interval to numberOfIntervals
 		select TextGrid 'gridfile$'
 		intname$ = ""
 		intname$ = Get label of interval... tier interval

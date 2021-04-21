@@ -4,8 +4,11 @@
 ##
 ## This script goes through sound and TextGrid files in a directory,
 ## opens each pair of Sound and TextGrid, gets 
-## 		1.Filename	
-## 		2.Segment label	
+## 		1. Filename	
+## 		2. Segment label	
+##		3. StartTime
+##		4. EndTime
+##		5. Duration
 ## and saves the results in a txt file.
 
 
@@ -15,6 +18,10 @@ form Collect all labels
 	text resultfile C:\Users\test\labels.txt
 	comment Which tier do you want to analyze?
 	integer Tier 4
+	choice delimiter: 1
+	button tab
+	button comma
+	
 
 endform
 
@@ -28,7 +35,12 @@ if fileReadable (resultfile$)
 	pause The result file 'resultfile$' already exists! Do you want to overwrite it?
 	filedelete 'resultfile$'
 endif
-titleline$ = "filename,segment,StartTime,EndTime,duration	'newline$'"
+if delimiter = 1
+	titleline$ = "filename	segment	StartTime	EndTime	duration	'newline$'"
+
+elif delimiter = 2
+	titleline$ = "filename,segment,StartTime,EndTime,duration	'newline$'"
+endif
 fileappend "'resultfile$'" 'titleline$'
 
 # Go through all the sound files, one by one:
@@ -49,8 +61,13 @@ for ifile to numberOfFiles
 			start = Get starting point... tier interval
 			end = Get end point... tier interval
 			duration = end - start
+			if delimiter = 1
+			resultline$ = "'tg$' 'tab$' 'label$' 'tab$' 'start' 'tab$' 'end' 'tab$' 'duration'	'newline$'"
+				fileappend "'resultfile$'" 'resultline$'
+			elif delimiter = 2
 			resultline$ = "'tg$','label$','start','end','duration'	'newline$'"
 				fileappend "'resultfile$'" 'resultline$'
+			endif
 			select TextGrid 'tg$'
 		endif
 	endfor

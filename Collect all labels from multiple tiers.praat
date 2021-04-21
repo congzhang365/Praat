@@ -18,6 +18,7 @@ form Analyze duration and pitches from labeled segments in files
 	text interval_result C:\Users\sprin\Desktop\test\test\int.csv
 	# text point_result C:\Users\point.txt
 	comment Which interval tier do you want to analyze?
+	integer segment_tier 5
 	integer stress_tier 7
 	integer word_tier 2
 	integer distance_tier 8
@@ -40,7 +41,7 @@ if need_interval_result = 1
 		filedelete 'interval_result$'
 	endif
 	# interval_titleline$ = "file_name,stress_label,stress_start,stress_end,stress_duration,word_label, word_start, word_end 'newline$'"
-	interval_titleline$ = "file_name,stress_label,stress_start,word_label,am_label,type_label,type_start,type_end 'newline$'"
+	interval_titleline$ = "file_name	stress_label	stress_start	stress_end	stess_duration	segment_label	segment_start	segment_end	segment_duration	word_label	am_label	type_label	type_start	type_end 'newline$'"
 	fileappend "'interval_result$'" 'interval_titleline$'
 
 endif
@@ -55,8 +56,9 @@ endif
 # point_titleline$ = "index, file_name, point_label, point_time, phoneme_label, phoneme_start, phoneme_end, phoneme_duration, word_label, distance_label, distance_duration 'newline$'"
 # fileappend "'point_result$'" 'point_titleline$'
 
-
+Text writing preferences: "UTF-8"
 # Go through all the sound files, one by one:
+
 for ifile to numberOfFiles
 	selectObject: strings
 	filename$ = Get string: ifile
@@ -80,8 +82,16 @@ for ifile to numberOfFiles
 			if stress_label$ <> ""
 				# if the interval has an unempty label, get its start and end, and duration:
 				stress_start = Get starting point: stress_tier, i
-				# stress_end = Get end point: stress_tier, i
-				# stress_duration = stress_end - stress_start
+				stress_end = Get end point: stress_tier, i
+				stress_duration = stress_end - stress_start
+				
+				# get the labels where the starting and ending points of the interval are
+				segment_interval = Get interval at time: segment_tier, stress_start
+				segment_label$ = Get label of interval: segment_tier, segment_interval
+				segment_start = Get starting point: segment_tier, segment_interval
+				segment_end = Get end point: segment_tier, segment_interval
+				segment_duration = segment_end - segment_start
+				
 				
 				# get the labels where the starting and ending points of the interval are
 				word_interval = Get interval at time: word_tier, stress_start
@@ -106,7 +116,7 @@ for ifile to numberOfFiles
 				
 				
 				# interval_resultline$ = "'tg_name$','int_label$','stress_start','stress_end','stress_duration','word_label$', 'word_start', 'word_end' 'newline$'"
-				interval_resultline$ = "'tg_name$','stress_label$','stress_start','word_label$','am_label$','type_label$','type_start','type_end' 'newline$'"
+				interval_resultline$ = "'tg_name$'	'stress_label$'	'stress_start'	'stress_end'	'stress_duration'	'segment_label$'	'segment_start'	'segment_end'	'segment_duration'	'word_label$'	'am_label$'	'type_label$'	'type_start'	'type_end' 'newline$'"
 
 				fileappend "'interval_result$'" 'interval_resultline$'
 			endif

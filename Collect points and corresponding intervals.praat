@@ -12,11 +12,11 @@
 
 form Analyze duration and pitches from labeled segments in files
 	comment Directory of TextGrid files
-	text textGrid_directory C:\Users\
+	text textGrid_directory C:\Users\sprin\SPRINT Dropbox\Cong Zhang\Other projects\Singing\ASA\final_Mandarin\
 	comment Full paths of the resulting text files:
 	boolean need_interval_result 0
-	text interval_result C:\Users\int.txt
-	text point_result C:\Users\point.txt
+	text interval_result C:\Users\sprin\SPRINT Dropbox\Cong Zhang\Other projects\Singing\ASA\analysis_presentation\int.txt
+	text point_result C:\Users\sprin\SPRINT Dropbox\Cong Zhang\Other projects\Singing\ASA\analysis_presentation\point.txt
 	comment Which interval tier do you want to analyze?
 	integer word_tier 3
 	integer phoneme_tier 4
@@ -36,7 +36,7 @@ if need_interval_result = 1
 		pause The result file 'interval_result$' already exists! Do you want to overwrite it?
 		filedelete 'interval_result$'
 	endif
-	interval_titleline$ = "file_name,interval_label,interval_start,interval_end,interval_duration,start_word_label, end_word_label 'newline$'"
+	interval_titleline$ = "file_name,interval_label,interval_start,interval_end,interval_duration, word_label, word_interval, word_start, word_end 'newline$'"
 	fileappend "'interval_result$'" 'interval_titleline$'
 
 endif
@@ -48,7 +48,7 @@ if fileReadable (point_result$)
 endif
 
 # Write a row with column titles to the result file:
-point_titleline$ = "index, file_name, point_label, point_time, phoneme_label, phoneme_start, phoneme_end, phoneme_duration, word_label 'newline$'"
+point_titleline$ = "index, file_name, point_label, point_time, phoneme_label, phoneme_start, phoneme_end, phoneme_duration, word_label, word_interval, word_start, word_end 'newline$'"
 fileappend "'point_result$'" 'point_titleline$'
 
 
@@ -76,13 +76,14 @@ for ifile to numberOfFiles
 				interval_duration = interval_end - interval_start
 				
 				# get the labels where the starting and ending points of the interval are
-				start_word_interval = Get interval at time: word_tier, interval_start
-				start_word_label$ = Get label of interval: word_tier, start_word_interval
-				
-				end_word_interval = Get interval at time: word_tier, interval_end
-				end_word_label$ = Get label of interval: word_tier, end_word_interval	
+				word_interval = Get interval at time: word_tier, interval_start
+				word_label$ = Get label of interval: word_tier, word_interval
+				word_start = Get starting point: phoneme_tier, i
+				word_end = Get end point: phoneme_tier, i
+				# end_word_interval = Get interval at time: word_tier, interval_end
+				# end_word_label$ = Get label of interval: word_tier, end_word_interval	
 
-				interval_resultline$ = "'tg_name$','int_label$','interval_start','interval_end','interval_duration','start_word_label$', 'end_word_label$' 'newline$'"
+				interval_resultline$ = "'tg_name$','int_label$','interval_start','interval_end','interval_duration','word_label$', 'word_interval', 'word_start', 'word_end' 'newline$'"
 				fileappend "'interval_result$'" 'interval_resultline$'
 			endif
 		endfor
@@ -111,8 +112,10 @@ for ifile to numberOfFiles
 		point_word_interval = Get interval at time: word_tier, point_time
 		for point_word to point_word_interval
 			point_word_label$ = Get label of interval: word_tier, point_word_interval
+			point_word_start = Get starting point: word_tier, point_word_interval
+			point_word_end = Get end point: word_tier, point_word_interval
 		endfor
-		point_resultline$ = "'j', 'tg_name$','point_label$','point_time', 'point_phoneme_label$', 'point_phoneme_start', 'point_phoneme_end','point_phoneme_duration', 'point_word_label$' 'newline$'"
+		point_resultline$ = "'j', 'tg_name$','point_label$','point_time', 'point_phoneme_label$', 'point_phoneme_start', 'point_phoneme_end','point_phoneme_duration', 'point_word_label$', 'point_word_interval', 'point_word_start', 'point_word_end' 'newline$'"
 		fileappend "'point_result$'" 'point_resultline$'
 	endfor
 	
