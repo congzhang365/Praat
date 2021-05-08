@@ -14,7 +14,7 @@ form Enter the directory for your audio files:
 	comment Only show files containing:
 	sentence word
 	comment What is the format of your audio file?
-	sentence filetype wav
+	sentence filetype .wav
 endform
 
 Create Strings as file list... list 'audio_dir$'*'word$'*'filetype$'
