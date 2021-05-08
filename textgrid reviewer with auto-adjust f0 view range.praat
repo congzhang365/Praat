@@ -18,6 +18,8 @@ form Enter directory and search string
 #  you may wish to only open tokens whose filenames begin with ba.
 	sentence word
 	sentence Filetype wav
+	comment save textgrid
+	boolean save_tg 1
 endform
 
 Create Strings as file list... list 'wav_dir$'*'word$'*'filetype$'
@@ -40,8 +42,10 @@ for x from 1 to number_of_files
 		pause work on your change
 		Close
 	endeditor
+	if save_tg = 1
 	select TextGrid 'object_name$'
 	Write to text file... 'tg_dir$''object_name$'.TextGrid
+	endif
 	select all
 	minus Sound 'object_name$'
 	minus Strings list
