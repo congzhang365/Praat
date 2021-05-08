@@ -24,52 +24,57 @@
 
 
 
-# form Analyze duration and pitches from labeled segments in files
-	# comment Directory of sound files
-	# text sound_directory C:\Users\sprin\Desktop\test\all\
-	# sentence Sound_file_extension .wav
-	# comment Directory of TextGrid files
-	# text textGrid_directory C:\Users\sprin\Desktop\test\all\
-	# sentence TextGrid_file_extension .TextGrid
-	# comment Full path of the resulting text file:
-	# text resultfile C:\Users\sprin\Desktop\test\all\vowel_f0_listing.csv
-	# comment Which tier do you want use as the reference tier for analyze?
-	# integer ref_tier 4
-	# comment also collect other labels
-	# integer utterance_tier 1
-	# integer word_tier 2
-	# integer segment_tier 3
-	# integer vowel_tier 4
-	# comment Pitch analysis parameters
-	# positive Time_step 0.01
-	# positive Minimum_pitch_(Hz) 30
-	# positive Maximum_pitch_(Hz) 650
-	# comment formant analysis
-	# positive number_of_formants 5
-	# positive maximum_formant 5500
-# endform
+form Analyze duration and pitches from labeled segments in files
+	comment Directory of sound files
+	text sound_directory C:\Users\sprin\Desktop\test\all\
+	sentence Sound_file_extension .wav
+	comment Directory of TextGrid files
+	text textGrid_directory C:\Users\sprin\Desktop\test\all\
+	sentence TextGrid_file_extension .TextGrid
+	comment Full path of the resulting text file:
+	text resultfile C:\Users\sprin\Desktop\test\all\vowel_f0_listing.csv
+	comment Which tier do you want use as the reference tier for analyze?
+	integer ref_tier 3
+	comment also collect other labels
+	integer utterance_tier 1
+	integer word_tier 2
+	integer segment_tier 3
+	# integer vowel_tier 3
+	comment Pitch analysis parameters
+	positive Time_step 0.01
+	positive Minimum_pitch_(Hz) 50
+	positive Maximum_pitch_(Hz) 650
+	comment intensity analysis
+	boolean intensity_analysis 0
+	
+	
+	comment formant analysis
+	boolean formant_analysis 0
+	positive number_of_formants 5
+	positive maximum_formant 5500
+endform
 
 
-# comment Directory of sound files
- sound_directory$ = "C:\Users\sprin\SPRINT Dropbox\Academic Research\Related_Projects\Comparison_Study\Full\Processed_Data\cut\vowel-level\all\"
- sound_file_extension$ = ".wav"
-# comment Directory of TextGrid files
- textGrid_directory$ = "C:\Users\sprin\SPRINT Dropbox\Academic Research\Related_Projects\Comparison_Study\Full\Processed_Data\cut\vowel-level\all\"
- textGrid_file_extension$ = ".TextGrid"
-# comment Full path of the resulting text file:
- resultfile$ = "C:\Users\sprin\SPRINT Dropbox\Academic Research\Related_Projects\Comparison_Study\Full\Analysis\utterance\vowel_5000.csv"
-# comment Which tier do you want to analyze?
- ref_tier = 4
- utterance_tier = 1
- word_tier = 2
- segment_tier = 3
- vowel_tier = 4	
-# comment Pitch analysis parameters
- time_step = 0.01
- minimum_pitch = 30
- maximum_pitch = 650
- number_of_formants = 5
- maximum_formant = 5000
+# # comment Directory of sound files
+ # sound_directory$ = "C:\Users\sprin\SPRINT Dropbox\Academic Research\Related_Projects\Comparison_Study\Full\Processed_Data\cut\vowel-level\all\"
+ # sound_file_extension$ = ".wav"
+# # comment Directory of TextGrid files
+ # textGrid_directory$ = "C:\Users\sprin\SPRINT Dropbox\Academic Research\Related_Projects\Comparison_Study\Full\Processed_Data\cut\vowel-level\all\"
+ # textGrid_file_extension$ = ".TextGrid"
+# # comment Full path of the resulting text file:
+ # resultfile$ = "C:\Users\sprin\SPRINT Dropbox\Academic Research\Related_Projects\Comparison_Study\Full\Analysis\utterance\vowel_5000.csv"
+# # comment Which tier do you want to analyze?
+ # ref_tier = 4
+ # utterance_tier = 1
+ # word_tier = 2
+ # segment_tier = 3
+ # vowel_tier = 4	
+# # comment Pitch analysis parameters
+ # time_step = 0.01
+ # minimum_pitch = 30
+ # maximum_pitch = 650
+ # number_of_formants = 5
+ # maximum_formant = 5000
 
 	
 	
@@ -92,8 +97,24 @@ endif
 
 # Write a row with column titles to the result file(comma-delimited):
 # (remember to edit this if you add or change the analyses!)
-titleline$ = "filename,ref,utterance,word,segment,vowel,StartTime,EndTime,time,intensity,f0,f1,f2 'newline$'"
+
+if intensity_analysis=1&formant_analysis=1
+titleline$ = "filename,ref,utterance,word,segment,StartTime,EndTime,time,intensity,f0,f1,f2 'newline$'"
 fileappend "'resultfile$'" 'titleline$'
+
+elif intensity_analysis=0&formant_analysis=1
+titleline$ = "filename,ref,utterance,word,segment,StartTime,EndTime,time,f0,f1,f2 'newline$'"
+fileappend "'resultfile$'" 'titleline$'
+
+elif intensity_analysis=1&formant_analysis=0
+titleline$ = "filename,ref,utterance,word,segment,StartTime,EndTime,time,intensity,f0 'newline$'"
+fileappend "'resultfile$'" 'titleline$'
+
+elif intensity_analysis=0&formant_analysis=0
+titleline$ = "filename,ref,utterance,word,segment,StartTime,EndTime,time,f0 'newline$'"
+fileappend "'resultfile$'" 'titleline$'
+endif
+
 
 # Go through all the sound files, one by one:
 for ifile to numberOfFiles
@@ -105,11 +126,16 @@ for ifile to numberOfFiles
 	# repeated for every sound file that was opened:
 	soundname$ = selected$ ("Sound", 1)
 	To Pitch: 0.001, minimum_pitch, maximum_pitch
-	select Sound 'soundname$'
-	To Intensity: minimum_pitch, 0.001
-	select Sound 'soundname$'
-	To Formant (burg): 0.001, number_of_formants, maximum_formant, window_length, preemphasis_from
-
+	if intensity_analysis = 1
+		select Sound 'soundname$'
+		To Intensity: minimum_pitch, 0.001
+	endif
+	
+	if formant_analysis = 1
+		select Sound 'soundname$'
+		To Formant (burg): 0.001, number_of_formants, maximum_formant, window_length, preemphasis_from
+	endif
+	
 	# Open a TextGrid by the same name:
 	gridfile$ = "'textGrid_directory$''soundname$''textGrid_file_extension$'"
 	if fileReadable (gridfile$)
@@ -147,8 +173,8 @@ for ifile to numberOfFiles
 				# segment_end = Get end point: segment_tier, segment_interval
 				# segment_duration = segment_end - segment_start
 				
-				vowel_interval = Get interval at time: vowel_tier, ref_start
-				vowel_label$ = Get label of interval: vowel_tier, vowel_interval
+				# vowel_interval = Get interval at time: vowel_tier, ref_start
+				# vowel_label$ = Get label of interval: vowel_tier, vowel_interval
 				# vowel_start = Get starting point: vowel_tier, vowel_interval
 				# vowel_end = Get end point: vowel_tier, vowel_interval
 				# vowel_duration = vowel_end - vowel_start
@@ -158,15 +184,36 @@ for ifile to numberOfFiles
 					time = ref_start + i * 0.01
 					select Pitch 'soundname$'
 					f0 = Get value at time: time, "Hertz", "linear"
-					select Intensity 'soundname$'
-					intensity = Get value at time: time, "cubic"
-					select Formant 'soundname$'
-					f1 = Get value at time: 1, time, "hertz", "linear"
-					f2 = Get value at time: 2, time, "hertz", "linear"
+					if intensity_analysis = 1
+						select Intensity 'soundname$'
+						intensity = Get value at time: time, "cubic"
+					endif
+					if formant_analysis = 1
+
+						select Formant 'soundname$'
+						f1 = Get value at time: 1, time, "hertz", "linear"
+						f2 = Get value at time: 2, time, "hertz", "linear"
+					endif
 					
-					resultline$ = "'soundname$','ref_label$','utterance_label$','word_label$','segment_label$','vowel_label$','ref_start','ref_end','time','intensity','f0','f1','f2' 'newline$'"
-					fileappend "'resultfile$'" 'resultline$'
+					
+					if intensity_analysis=1&formant_analysis=1
+						resultline$ = "'soundname$','ref_label$','utterance_label$','word_label$','segment_label$','ref_start','ref_end','time','intensity','f0','f1','f2' 'newline$'"
+						fileappend "'resultfile$'" 'resultline$'
+						
+					elif intensity_analysis=0&formant_analysis=1
+					resultline$ = "'soundname$','ref_label$','utterance_label$','word_label$','segment_label$','ref_start','ref_end','time','f0','f1','f2' 'newline$'"
+						fileappend "'resultfile$'" 'resultline$'
+					
+					elif intensity_analysis=1&formant_analysis=0
+					resultline$ = "'soundname$','ref_label$','utterance_label$','word_label$','segment_label$','ref_start','ref_end','time','intensity','f0' 'newline$'"
+						fileappend "'resultfile$'" 'resultline$'
+					
+					elif intensity_analysis=0&formant_analysis=0
+					resultline$ = "'soundname$','ref_label$','utterance_label$','word_label$','segment_label$','ref_start','ref_end','time','f0' 'newline$'"
+						fileappend "'resultfile$'" 'resultline$'
+					endif
 				select TextGrid 'soundname$'
+				
 				
 				endfor
 
@@ -182,7 +229,7 @@ for ifile to numberOfFiles
 	Remove
 	select Strings list
 	# and go on with the next sound file!
-	appendInfoLine: ifile, "/", numberOfFiles
+	writeInfoLine: ifile, "/", numberOfFiles
 endfor
 
 Remove
