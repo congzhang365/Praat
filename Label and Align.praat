@@ -19,7 +19,7 @@ form Files
 		option method 3: only align.
 	comment Transcription or Text?
 	choice trans: 2
-		button transcription
+		button transcription_file
 		button text
 	comment If text, what text?
 	boolean same_text_for_all 0
@@ -177,6 +177,8 @@ if method = 1
 					Save as text file... 'input_directory$''object_name$'.TextGrid
 				elsif newnewnew = 1
 				select Sound 'object_name$'
+				snd_dur = Get total duration
+				select Sound 'object_name$'
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
@@ -206,6 +208,8 @@ if method = 1
 				select TextGrid 'object_name$'
 				
 				#write the string in the chosen tier and interval.
+				Insert boundary: transtier, 0.1
+				Insert boundary: transtier, snd_dur-0.1
 				Set interval text: transtier, transinterval, "'string$'"
 				#pause
 				#Save as text file... 'input_directory$''object_name$'.TextGrid
@@ -240,6 +244,8 @@ if method = 1
 				endif
 			else
 				select Sound 'object_name$'
+				snd_dur = Get total duration
+				select Sound 'object_name$'
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
@@ -269,6 +275,8 @@ if method = 1
 				select TextGrid 'object_name$'
 				
 				#write the string in the chosen tier and interval.
+				Insert boundary: transtier, 0.1
+				Insert boundary: transtier, snd_dur-0.1
 				Set interval text: transtier, transinterval, "'string$'"
 				#pause
 				#Save as text file... 'input_directory$''object_name$'.TextGrid
