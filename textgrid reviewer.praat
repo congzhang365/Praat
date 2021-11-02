@@ -1,12 +1,3 @@
-## textgrid reviewer with auto-adjust f0 view range.praat
-## Dr Cong Zhang@SPRINT, Radboud University || 05 Nov 2020
-## With this script you can: 
-## (1) View textgrid and sound together 
-##    (filter by keyword or leave blank for all); 
-## (2) Automatically adjust the view range of f0 according to their extrema;
-## (3) Automatically save the changes in textgrids.
-
-
 form Enter directory and search string
 # Be sure not to forget the slash (Windows: backslash, OSX: forward
 # slash)  at the end of the directory name.
@@ -16,12 +7,13 @@ form Enter directory and search string
 #  directory. By specifying a Word, you can open only those files
 #  that begin with a particular sequence of characters. For example,
 #  you may wish to only open tokens whose filenames begin with ba.
+	comment only show files with the keywords:
 	sentence word
 	sentence Filetype wav
 	comment save textgrid
 	boolean save_tg 1
-	comment Set max viewing f0 value
-	integer lower_max_f0 350
+	# comment Set max viewing f0 value
+	# integer lower_max_f0 350
 
 endform
 
@@ -32,28 +24,11 @@ for x from 1 to number_of_files
 	current_file$ = Get string... x
 	Read from file... 'wav_dir$''current_file$'
 	object_name$ = selected$ ("Sound")
-	To Pitch: 0, 75, 600
-	max_f0 = Get maximum: 0, 0, "Hertz", "parabolic"
-	min_f0 = Get minimum: 0, 0, "Hertz", "parabolic"
-
+	
 	Read from file... 'tg_dir$''object_name$'.TextGrid
 	plus Sound 'object_name$'
 	View & Edit
-	
-	if max_f0 > 500
-		editor:"TextGrid " + object_name$
-		Advanced pitch settings: min_f0-20, lower_max_f0+20, "no", 15, 0.03, 0.45, 0.01, 0.35, 0.14	
-		pause work on your change
-		Close
-		endeditor
-	else
-	
-		editor:"TextGrid " + object_name$
-			Advanced pitch settings: min_f0-20, max_f0, "no", 15, 0.03, 0.45, 0.01, 0.35, 0.14	
-			pause work on your change
-			Close
-		endeditor
-	endif
+	pause  Make any changes then click Continue. 
 	if save_tg = 1
 	select TextGrid 'object_name$'
 	Write to text file... 'tg_dir$''object_name$'.TextGrid

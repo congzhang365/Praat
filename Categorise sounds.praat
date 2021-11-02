@@ -8,7 +8,10 @@ form Enter directory and search string
 	comment Save selected objects...
 	sentence Saveto C:\Users\
 	comment Name of log
-	sentence logname log1
+	sentence logname H_LH_Final_mismatch
+	boolean with_tg 1
+	sentence textGrid_directory C:\Users\
+	boolean auto_play 0
 endform
 
 appendInfoLine:"------",date$(),"------"
@@ -23,11 +26,21 @@ writeFileLine:"'Saveto$''logname$'.txt","Filename",tab$,"Folder"
 for x from 1 to number_of_files
 	select Strings list
 	current_file$ = Get string... x
+
 	Read from file... 'directory$''current_file$'
-	object_name$ = selected$ ("Sound")
+	object_name$ = selected$ ("Sound", 1)
+	if auto_play = 1
+		Play
+	endif
+	
+	gridfile$ = "'textGrid_directory$''object_name$'.TextGrid"
+	if with_tg = 1
+		Read from file... 'gridfile$'
+	endif
+	select Sound 'object_name$'
+	plus TextGrid 'object_name$'
 	# Listen to the sound file
-	Play
-	 
+
 	#You can  view the sound at the same time. If not necessary, delete this line.
 	View & Edit
 	
