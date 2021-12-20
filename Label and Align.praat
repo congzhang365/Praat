@@ -67,18 +67,24 @@ if method = 1
 		
 		
 		Create Strings as file list... list 'input_directory$'*'keyword$'*wav
-		number_files = Get number of strings
 		pause Edit string list?
+		number_files = Get number of strings
+		
 		
 		for i from 1 to number_files
 			select Strings transcription
-			string$ = Get string... i
+			# uncomment to get loop
+			# string$ = Get string... i
+			
+			# only use the first line of the transcript
+			string$ = Get string... 1
 			
 			select Strings list
 			current_file$ = Get string... i
 			Read from file... 'input_directory$''current_file$'
 			object_name$ = selected$ ("Sound")
 			txtgrd$ = input_directory$ + object_name$ +".TextGrid"
+			
 			if fileReadable(txtgrd$)
 				Read from file... 'txtgrd$'
 				select TextGrid 'object_name$'
@@ -91,14 +97,12 @@ if method = 1
 				if newnewnew = 2
 					select TextGrid 'object_name$'
 					Save as text file... 'input_directory$''object_name$'.TextGrid
+					
+				
 				elsif newnewnew = 1
 				select Sound 'object_name$'
+				snd_dur = Get total duration
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
-				select TextGrid 'object_name$'
-				plus Sound 'object_name$'
-				View & Edit
-			
-				pause continue?
 				select TextGrid 'object_name$'
 				
 				#write the string in the chosen tier and interval.
@@ -108,7 +112,10 @@ if method = 1
 				
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
-				#View & Edit
+				View & Edit
+				pause continue?
+				select TextGrid 'object_name$'
+				
 				editor TextGrid 'object_name$'
 				Align interval
 				pause Aligned.
@@ -119,21 +126,29 @@ if method = 1
 				endif
 			else
 				select Sound 'object_name$'
+				snd_dur = Get total duration
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
 				Insert boundary: 1, 0.01
-				select TextGrid 'object_name$'
-				plus Sound 'object_name$'
-				View & Edit
-				
+				Insert boundary: 1, snd_dur-0.01
 				select TextGrid 'object_name$'
 				
 				#write the string in the chosen tier and interval.
 				Set interval text: transtier, transinterval, "'string$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+
+				
+				select TextGrid 'object_name$'
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				appendInfoLine: "!!!The word is 'string$' for 'object_name$'."
 				#pause
 				#Save as text file... 'input_directory$''object_name$'.TextGrid
 				pause Edit?
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
+				
 				editor TextGrid 'object_name$'
 				Align interval
 				pause Aligned.
