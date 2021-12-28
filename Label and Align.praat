@@ -19,7 +19,8 @@ form Files
 		option method 3: only align.
 	comment Transcription or Text?
 	choice trans: 2
-		button transcription_file
+		button matching_transcription_file
+		button other_transcription_file
 		button text
 	comment If text, what text?
 	boolean same_text_for_all 0
@@ -35,6 +36,8 @@ form Files
 	integer transinterval 2
 	comment only certain files?
 	sentence keyword
+	comment run in background without pauses?
+	boolean run_in_background 0
 endform
 
 #New section in Praat info window
@@ -59,9 +62,118 @@ appendInfoLine: "Processing folder ['folder$']"
 #The transcription file can have mutiple lines(same number and same order as sound files)
 
 if method = 1
-	if trans = 1
-		#Use this line if the transcription file name is the folder name, e.g. folder name is 'Item1' and transcription has the same name
-		#Read Strings from raw text file... 'input_directory$''folder$'.txt
+	if trans = 1		
+		Create Strings as file list... list 'input_directory$'*'keyword$'*wav
+		pause Edit string list?
+		number_files = Get number of strings
+		
+		
+		for i from 1 to number_files
+		
+			select Strings list
+			current_file$ = Get string... i
+			Read from file... 'input_directory$''current_file$'
+			object_name$ = selected$ ("Sound")
+			txtgrd$ = input_directory$ + object_name$ + ".TextGrid"
+			txt$ = transdir$ + object_name$ + ".txt"
+					
+			# Read text file
+			Read Strings from raw text file... 'txt$'
+			select Strings 'object_name$'
+			# Only read the first line of the transcript
+			string$ = Get string... 1
+			
+			if fileReadable(txtgrd$)
+				Read from file... 'txtgrd$'
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+				
+				beginPause: "New textgrid" 
+				comment: "Do you want to create new textgrid?"
+				new_tg_file = endPause: "1. Yes", "2. No", 2
+				if new_tg_file = 2
+					select TextGrid 'object_name$'
+					Save as text file... 'input_directory$''object_name$'.TextGrid
+					
+				
+				elsif new_tg_file = 1
+				select Sound 'object_name$'
+				snd_dur = Get total duration
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				#pause
+				#Save as text file... 'input_directory$''object_name$'.TextGrid
+				
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+				if run_in_background = 0
+					pause continue?
+				endif
+				select TextGrid 'object_name$'
+				
+				editor TextGrid 'object_name$'
+				Align interval
+				if run_in_background = 0
+					pause Aligned.
+				endif
+				endeditor
+				select TextGrid 'object_name$'
+			
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+				endif
+			else
+				select Sound 'object_name$'
+				snd_dur = Get total duration
+				To TextGrid: "'intervaltiers$'","'pointtiers$'"
+				Insert boundary: 1, 0.01
+				Insert boundary: 1, snd_dur-0.01
+				select TextGrid 'object_name$'
+				
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				View & Edit
+
+				
+				select TextGrid 'object_name$'
+				#write the string in the chosen tier and interval.
+				Set interval text: transtier, transinterval, "'string$'"
+				#pause
+				#Save as text file... 'input_directory$''object_name$'.TextGrid
+				if run_in_background = 0
+					pause Edit?
+				endif
+				select TextGrid 'object_name$'
+				plus Sound 'object_name$'
+				
+				editor TextGrid 'object_name$'
+				Align interval
+				if run_in_background = 0
+					pause Aligned.
+				endif
+				endeditor
+		
+				select TextGrid 'object_name$'
+
+				Save as text file... 'input_directory$''object_name$'.TextGrid
+			endif
+		appendInfoLine: "The word is 'string$' for 'object_name$'.",i," out of ", number_files, " were processed."
+		endfor	
+	
+				
+	appendInfoLine: "The word is 'string$' for 'object_name$'."
+	
+	elif trans = 2
+		# Uncomment the following line if the transcription file name is the folder name, e.g. folder name is 'Item1' and transcription has the same name
+		## Read Strings from raw text file... 'input_directory$''folder$'.txt
+		
+		# Use this line for a separate text file
 		Read Strings from raw text file... 'transdir$'
 		Rename... transcription
 		
@@ -93,13 +205,13 @@ if method = 1
 				
 				beginPause: "New textgrid" 
 				comment: "Do you want to create new textgrid?"
-				newnewnew = endPause: "1. Yes", "2. No", 2
-				if newnewnew = 2
+				new_tg_file = endPause: "1. Yes", "2. No", 2
+				if new_tg_file = 2
 					select TextGrid 'object_name$'
 					Save as text file... 'input_directory$''object_name$'.TextGrid
 					
 				
-				elsif newnewnew = 1
+				elsif new_tg_file = 1
 				select Sound 'object_name$'
 				snd_dur = Get total duration
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
@@ -113,12 +225,16 @@ if method = 1
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
 				View & Edit
-				pause continue?
+				if run_in_background = 0
+					pause continue?
+				endif
 				select TextGrid 'object_name$'
 				
 				editor TextGrid 'object_name$'
 				Align interval
-				pause Aligned.
+				if run_in_background = 0
+					pause Aligned.
+				endif
 				endeditor
 				select TextGrid 'object_name$'
 			
@@ -145,13 +261,17 @@ if method = 1
 				appendInfoLine: "!!!The word is 'string$' for 'object_name$'."
 				#pause
 				#Save as text file... 'input_directory$''object_name$'.TextGrid
-				pause Edit?
+				if run_in_background = 0
+					pause Edit?
+				endif
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
 				
 				editor TextGrid 'object_name$'
 				Align interval
-				pause Aligned.
+				if run_in_background = 0
+					pause Aligned.
+				endif
 				endeditor
 		
 				select TextGrid 'object_name$'
@@ -166,7 +286,7 @@ if method = 1
 			
 			
 	# when you do not have a transcription file:
-	elsif trans = 2
+	elsif trans = 3
 		Create Strings as file list... list 'input_directory$'*'keyword$'*wav
 		number_files = Get number of strings
 		pause Edit string list?
@@ -186,11 +306,11 @@ if method = 1
 				
 				beginPause: "New textgrid" 
 				comment: "Do you want to create new textgrid?"
-				newnewnew = endPause: "1. Yes", "2. No", 2
-				if newnewnew = 2
+				new_tg_file = endPause: "1. Yes", "2. No", 2
+				if new_tg_file = 2
 					select TextGrid 'object_name$'
 					Save as text file... 'input_directory$''object_name$'.TextGrid
-				elsif newnewnew = 1
+				elsif new_tg_file = 1
 				select Sound 'object_name$'
 				snd_dur = Get total duration
 				select Sound 'object_name$'
@@ -233,7 +353,9 @@ if method = 1
 				plus Sound 'object_name$'
 				editor TextGrid 'object_name$'
 				Align interval
-				pause Aligned.
+				if run_in_background = 0
+					pause Aligned.
+				endif
 				endeditor
 				
 				#The following section is to get the necessary text for different tiers and intervals
@@ -300,7 +422,9 @@ if method = 1
 				plus Sound 'object_name$'
 				editor TextGrid 'object_name$'
 				Align interval
-				pause Aligned.
+				if run_in_background = 0
+					pause Aligned.
+				endif
 				endeditor
 		
 				select TextGrid 'object_name$'
@@ -348,18 +472,19 @@ elsif method = 2
 				
 				beginPause: "New textgrid" 
 				comment: "Do you want to create new textgrid?"
-				newnewnew = endPause: "1. Yes", "2. No", 2
-				if newnewnew = 2
+				new_tg_file = endPause: "1. Yes", "2. No", 2
+				if new_tg_file = 2
 					select TextGrid 'object_name$'
 					Save as text file... 'input_directory$''object_name$'.TextGrid
-				elsif newnewnew = 1
+				elsif new_tg_file = 1
 				select Sound 'object_name$'
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
 				View & Edit
-			
-				pause continue?
+				if run_in_background = 0			
+					pause continue?
+				endif
 				select TextGrid 'object_name$'
 				
 				#write the string in the chosen tier and interval.
@@ -407,11 +532,11 @@ elsif method = 2
 				
 				beginPause: "New textgrid" 
 				comment: "Do you want to create new textgrid?"
-				newnewnew = endPause: "1. Yes", "2. No", 2
-				if newnewnew = 2
+				new_tg_file = endPause: "1. Yes", "2. No", 2
+				if new_tg_file = 2
 					select TextGrid 'object_name$'
 					Save as text file... 'input_directory$''object_name$'.TextGrid
-				elsif newnewnew = 1
+				elsif new_tg_file = 1
 				select Sound 'object_name$'
 				To TextGrid: "'intervaltiers$'","'pointtiers$'"
 				select TextGrid 'object_name$'
@@ -513,7 +638,9 @@ elsif method = 3
 				select TextGrid 'object_name$'
 				plus Sound 'object_name$'
 				View & Edit
-				pause edit?
+				if run_in_background = 0
+					pause edit?
+				endif
 				select TextGrid 'object_name$'
 				Save as text file... 'input_directory$''object_name$'.TextGrid
 			else
@@ -538,7 +665,9 @@ elsif method = 3
 				plus Sound 'object_name$'
 				editor TextGrid 'object_name$'
 				Align interval
-				pause Aligned.
+				if run_in_background = 0
+					pause Aligned.
+				endif
 				endeditor
 
 				select TextGrid 'object_name$'
